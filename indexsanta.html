@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎅 Santa's Toy Factory Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheetsanta.css">
+</head>
+<body>
+    <!-- Snowfall Animation -->
+    <div class="snowflakes" aria-hidden="true">
+        <div class="snowflake">❅</div><div class="snowflake">❆</div><div class="snowflake">❅</div>
+        <div class="snowflake">❆</div><div class="snowflake">❅</div><div class="snowflake">❆</div>
+    </div>
+
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-industry"></i>
+                <h1>Santa's Toy Factory Dashboard</h1>
+            </div>
+            <div class="header-info">
+                <div class="christmas-countdown">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <span class="countdown-label">Production Deadline</span>
+                        <span id="christmas-countdown" class="countdown-timer">24:00:00</span>
+                    </div>
+                </div>
+                <div class="current-time">
+                    <span id="current-time">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-container">
+        <!-- Alert Banner -->
+        <div class="alert-banner" id="alertBanner">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="alertMessage">System Initializing...</span>
+            <button class="alert-close" onclick="closeAlert()">×</button>
+        </div>
+
+        <!-- Stats Cards -->
+        <section class="stats-section">
+            <h2 class="section-title">
+                <i class="fas fa-tachometer-alt"></i> Factory Overview
+            </h2>
+            <div class="stats-grid">
+                <div class="stat-card card-total">
+                    <div class="card-icon">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Toys Produced</h3>
+                        <p class="stat-number" id="totalToys">0</p>
+                        <p class="stat-trend" id="toyTrend">+0 today</p>
+                    </div>
+                </div>
+
+                <div class="stat-card card-active">
+                    <div class="card-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Active Production Lines</h3>
+                        <p class="stat-number" id="activeLines">0</p>
+                        <p class="stat-trend">Running smoothly</p>
+                    </div>
+                </div>
+
+                <div class="stat-card card-alerts">
+                    <div class="card-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Low Stock Alerts</h3>
+                        <p class="stat-number" id="stockAlerts">0</p>
+                        <p class="stat-trend">Need attention</p>
+                    </div>
+                </div>
+
+                <div class="stat-card card-regions">
+                    <div class="card-icon">
+                        <i class="fas fa-globe-africa"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Regions Stocked</h3>
+                        <p class="stat-number" id="regionsStocked">0</p>
+                        <p class="stat-trend">Of 50 total</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <section class="content-grid">
+            <!-- Left Column: Inventory -->
+            <div class="content-column">
+                <div class="card inventory-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-warehouse"></i> Regional Inventory</h3>
+                        <div class="card-actions">
+                            <button class="btn-refresh" onclick="loadDashboardData()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <select id="regionFilter" class="filter-select" onchange="filterInventory()">
+                                <option value="all">All Regions</option>
+                                <option value="africa">Africa</option>
+                                <option value="europe">Europe</option>
+                                <option value="asia">Asia</option>
+                                <option value="americas">Americas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="inventory-table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-cube"></i> Toy</th>
+                                        <th><i class="fas fa-globe"></i> Region</th>
+                                        <th><i class="fas fa-boxes"></i> Stock</th>
+                                        <th><i class="fas fa-chart-line"></i> Status</th>
+                                        <th><i class="fas fa-clock"></i> Restock ETA</th>
+                                        <th><i class="fas fa-cogs"></i> Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventoryTable">
+                                    <!-- Data loaded by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Production & Alerts -->
+            <div class="content-column">
+                <!-- Production Lines -->
+                <div class="card production-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-industry"></i> Production Lines</h3>
+                        <span class="status-badge status-active" id="linesStatus">Loading...</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="production-grid" id="productionGrid">
+                            <!-- Production lines loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Alerts -->
+                <div class="card alerts-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bell"></i> Active Alerts</h3>
+                        <span class="alert-count" id="alertCount">0</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="alerts-list" id="alertsList">
+                            <!-- Alerts loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stock Chart -->
+        <section class="chart-section">
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-bar"></i> Stock Levels by Region</h3>
+                    <div class="chart-legend">
+                        <span class="legend-item in-stock"><i class="fas fa-circle"></i> In Stock</span>
+                        <span class="legend-item low-stock"><i class="fas fa-circle"></i> Low Stock</span>
+                        <span class="legend-item out-stock"><i class="fas fa-circle"></i> Out of Stock</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="stockChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <p><i class="fas fa-copyright"></i> 2025 North Pole Operations • 
+                   <span id="last-updated">Last Updated: Loading...</span>
+                </p>
+                <p class="footer-location">
+                    <i class="fas fa-map-marker-alt"></i> Developed in Douala, Cameroon • AWS santa Challenge
+                </p>
+            </div>
+            <div class="system-status">
+                <span class="status-indicator status-good"></span>
+                <span>API Status: <span id="apiStatus">Connecting...</span></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="santa.js"></script>
+</body>
+</html>
